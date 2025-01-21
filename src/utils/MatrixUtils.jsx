@@ -1,10 +1,11 @@
+/* eslint-disable react/display-name */
 import React, { useState } from 'react';
 
-const Cell = ({ 
-  value, 
-  onHover, 
-  onLeave, 
-  isHighlighted, 
+const Cell = ({
+  value,
+  onHover,
+  onLeave,
+  isHighlighted,
   bg = 'bg-gray-100',
   size = 'small' // 'small' | 'large'
 }) => {
@@ -25,13 +26,13 @@ const Cell = ({
   );
 };
 
-const Matrix = ({ 
-  data, 
-  cols, 
+const Matrix = ({
+  data,
+  cols,
   rows,
-  highlights, 
-  onHover, 
-  onLeave, 
+  highlights,
+  onHover,
+  onLeave,
   bg,
   cellSize = 'small',
   gapSize = 'small' // 'small' | 'large'
@@ -81,17 +82,17 @@ export const createPermutationComponent = ({
   return ({ title, input, output, table, onHighlight }) => {
     const [highlights, setHighlights] = useState({ input: -1, table: -1, output: -1 });
     const tableCols = table[0].length;
-    
+
     const handleHover = (type, index) => {
       const newHighlights = { input: -1, table: -1, output: -1 };
-      
+
       if (type === 'output' || type === 'table') {
         const tableValue = table[Math.floor(index / tableCols)][index % tableCols];
         newHighlights.input = tableValue - 1;
         newHighlights.table = index;
         newHighlights.output = index;
       }
-      
+
       setHighlights(newHighlights);
       onHighlight?.(newHighlights);
     };
@@ -115,7 +116,7 @@ export const createPermutationComponent = ({
     const outputBits = output || '0'.repeat(defaultLength);
 
     return (
-      <div className="p-4 rounded-lg shadow ">
+      <div className="p-4 rounded-lg shadow lg:flex-row flex-col ">
         <h3 className="text-base font-semibold mb-6">{title}</h3> {/* Added margin bottom */}
         <div className={`mt-6 ${layoutClasses[layout]} ${spacingClasses[spacing]}`}> {/* Added margin top */}
           <div className="">
@@ -132,7 +133,7 @@ export const createPermutationComponent = ({
               onLeave={handleLeave} // Clear highlights on mouse leave
             />
           </div>
-          
+
           {/* <Matrix
             data={table.flat()}
             cols={tableCols}

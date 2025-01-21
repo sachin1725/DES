@@ -49,15 +49,15 @@ export const PBox = ({ data, currentStage }) => (
 );
 
 const Transformation = ({ data, formatBinary, currentStage }) => (
-  <div className="w-full flex">
-    <div className="w-50 p-2">
+  <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col sm:flex-row">
       <ExpansionBox data={data} currentStage={currentStage} />
       <PBox data={data} currentStage={currentStage} />
     </div>
-    <div className=" w-full">
-      <SBoxTransformation xorOutput={data?.rounds[currentStage-1]?.steps.xor_output}/>
-    </div>
+
+    <SBoxTransformation xorOutput={data?.rounds[currentStage - 1]?.steps.xor_output} className="w-full" />
   </div>
 );
+
 
 export default Transformation;

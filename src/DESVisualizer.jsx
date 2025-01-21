@@ -136,6 +136,23 @@ const AnimationControls = ({
         {!isAnimating ? 'Start Animation' : (isPaused ? 'Resume' : 'Pause')}
       </button>
 
+      <button
+        onClick={onToggleDetails}
+        className="flex-1 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center gap-2 text-sm"
+      >
+        {showDetails ? (
+          <>
+            <ChevronUp className="w-4 h-4" />
+            Hide Details
+          </>
+        ) : (
+          <>
+            <ChevronDown className="w-4 h-4" />
+            Show Details
+          </>
+        )}
+      </button>
+
       {isAnimating && (
         <>
 
@@ -158,27 +175,6 @@ const AnimationControls = ({
         </>
       )}
     </div>
-
-    {/* Detail controls */}
-    <div className="flex gap-2">
-      <button
-        onClick={onToggleDetails}
-        className="flex-1 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center gap-2 text-sm"
-      >
-        {showDetails ? (
-          <>
-            <ChevronUp className="w-4 h-4" />
-            Hide Details
-          </>
-        ) : (
-          <>
-            <ChevronDown className="w-4 h-4" />
-            Show Details
-          </>
-        )}
-      </button>
-    </div>
-
   </div>
 );
 
@@ -186,12 +182,12 @@ const AnimationControls = ({
 const ResultsPanel = ({ desResult, currentStage, formatBinary, isPaused, showDetails }) => {
   if (!desResult) return null;
 
-  if (currentStage === 0) return <IPMatrix data={desResult.initial} formatBinary={formatBinary} isPaused={isPaused} />;
-  if (currentStage === 17) return <FPMatrix data={desResult.final} formatBinary={formatBinary} isPaused={isPaused} />;
+  if (currentStage === 0 && showDetails) return <IPMatrix data={desResult.initial} formatBinary={formatBinary} isPaused={isPaused} />;
+  if (currentStage === 17 && showDetails) return <FPMatrix data={desResult.final} formatBinary={formatBinary} isPaused={isPaused} />;
 
   return (
-    <div className={`flex transition-all duration-300 ${showDetails ? 'opacity-100' : 'hidden'}`}>
-      <div className="">
+    <div className={`flex flex-col w-full lg:flex-row transition-all duration-300 ${showDetails ? 'opacity-100' : 'hidden'}`}>
+      <div className="w-50 h-100">
         <FunctionDetails
           data={desResult.rounds[currentStage - 1]}
           isActive={true}
@@ -202,7 +198,7 @@ const ResultsPanel = ({ desResult, currentStage, formatBinary, isPaused, showDet
         />
       </div>
       {currentStage > 0 && currentStage <= 16 && (
-        <div className="">
+        <div className="w-30">
           <Transformation
             data={desResult}
             formatBinary={formatBinary}
@@ -306,42 +302,50 @@ const DESVisualizer = () => {
   }, [currentStage, isAnimating, isPaused]);
 
   return (
-    <div className="p-2">
-      <InputForm input={input} setInput={setInput} encrKey={encrKey} setEncrKey={setEncrKey} />
-
-      <AnimationControls
-        isAnimating={isAnimating}
-        isPaused={isPaused}
-        onMainButtonClick={handleMainButtonClick}
-        onPrev={handlePrev}
-        onSkip={handleSkip}
-        showDetails={showDetails}
-        onToggleDetails={handleToggleDetails}
-        currentStage={currentStage}
-        totalStages={TOTAL_STAGES}
-      />
-
-      <div className="flex gap-4">
-        <div className="w-80">
-          <StageDisplay
-            stage={currentStage}
-            input={input}
-            effectiveRound={effectiveRound}
-            currentStage={currentStage}
-            cipherText={cipherText}
-            getStageStyles={getStageStyles}
-            desResult={desResult}
-          />
-        </div>
-
-        <ResultsPanel
-          desResult={desResult}
-          currentStage={currentStage}
-          formatBinary={formatBinary}
-          isPaused={isPaused}
-          showDetails={showDetails}
-          className="w-120"
+    <div className="max-w-[98vw] mx-auto">
+      <div className="p-2">
+        <InputForm
+          input={input}
+          setInput={setInput}
+          encrKey={encrKey}
+          setEncrKey={setEncrKey}
         />
+
+        <AnimationControls
+          isAnimating={isAnimating}
+          isPaused={isPaused}
+          onMainButtonClick={handleMainButtonClick}
+          onPrev={handlePrev}
+          onSkip={handleSkip}
+          showDetails={showDetails}
+          onToggleDetails={() => setShowDetails(!showDetails)}
+          currentStage={currentStage}
+          totalStages={TOTAL_STAGES}
+        />
+
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="lg:w-80 min-w-[280px] max-w-full">
+            <StageDisplay
+              stage={currentStage}
+              input={input}
+              effectiveRound={effectiveRound}
+              currentStage={currentStage}
+              cipherText={cipherText}
+              getStageStyles={getStageStyles}
+              desResult={desResult}
+            />
+          </div>
+
+          <div className="lg:flex-1 max-w-full">
+            <ResultsPanel
+              desResult={desResult}
+              currentStage={currentStage}
+              formatBinary={formatBinary}
+              isPaused={isPaused}
+              showDetails={showDetails}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 const S_BOXES = [
   [
@@ -66,11 +66,11 @@ const SBoxTransformation = ({ xorOutput }) => {
 
   const renderInputBits = (input) => {
     if (!input) return null;
-    
+
     return (
       <div className="font-mono space-x-1">
         <span className="bg-blue-100 px-2 rounded ml-1">{input[0]}</span>
-        <span className="bg-green-100 px-2 rounded">{input.slice(1, 5).split('').join('')}</span>
+        <span className="bg-blue-300 px-2 rounded">{input.slice(1, 5).split('').join('')}</span>
         <span className="bg-blue-100 px-2 rounded">{input[5]}</span>
       </div>
     );
@@ -78,11 +78,10 @@ const SBoxTransformation = ({ xorOutput }) => {
 
   const renderColHeaders = () => {
     return Array.from({ length: 16 }, (_, i) => i).map(idx => (
-      <div 
-        key={idx} 
-        className={`w-8 text-center text-xs ${
-          currentResult && currentResult.col === idx ? 'bg-green-100' : ''
-        }`}
+      <div
+        key={idx}
+        className={`w-8 text-center text-xs ${currentResult && currentResult.col === idx ? 'bg-blue-300' : ''
+          }`}
       >
         {idx.toString(2).padStart(4, '0')}
       </div>
@@ -90,7 +89,7 @@ const SBoxTransformation = ({ xorOutput }) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white shadow border border-gray-200 text-sm">
+    <div className="w-full bg-white shadow border border-gray-200 text-sm">
       <div className="flex items-center justify-between p-2 border-b">
         <select
           className="border rounded px-2 py-1"
@@ -105,6 +104,11 @@ const SBoxTransformation = ({ xorOutput }) => {
           <div>Input bits:</div>
           {renderInputBits(chunks[selectedSBox])}
         </div>
+        {currentResult && (
+          <div className="text-lg px-4 py-2 rounded">
+            Output: {currentResult.value} ({currentResult.value.toString(2).padStart(4, '0')})
+          </div>
+        )}
       </div>
 
       <div className="p-2">
@@ -118,26 +122,24 @@ const SBoxTransformation = ({ xorOutput }) => {
               </div>
               {S_BOXES[selectedSBox].map((row, rowIdx) => (
                 <div key={rowIdx} className="flex">
-                  <div 
-                    className={`w-6 flex items-center justify-center text-xs mr-1 ${
-                      currentResult && currentResult.row === rowIdx ? 'bg-blue-100' : ''
-                    }`}
+                  <div
+                    className={`w-6 flex items-center justify-center text-xs mr-1 ${currentResult && currentResult.row === rowIdx ? 'bg-blue-100' : ''
+                      }`}
                   >
                     {rowIdx.toString(2).padStart(2, '0')}
                   </div>
                   {row.map((value, colIdx) => (
                     <div
                       key={colIdx}
-                      className={`w-8 h-8 flex items-center justify-center border ${
-                        currentResult &&
-                        currentResult.row === rowIdx &&
-                        currentResult.col === colIdx
-                          ? 'bg-yellow-200 font-bold'
-                          : currentResult && 
+                      className={`w-8 h-8 flex items-center justify-center border ${currentResult &&
+                          currentResult.row === rowIdx &&
+                          currentResult.col === colIdx
+                          ? 'bg-green-200 font-bold'
+                          : currentResult &&
                             (currentResult.row === rowIdx || currentResult.col === colIdx)
-                          ? 'bg-gray-50'
-                          : 'bg-white'
-                      }`}
+                            ? 'bg-gray-50'
+                            : 'bg-white'
+                        }`}
                     >
                       {value}
                     </div>
@@ -146,13 +148,6 @@ const SBoxTransformation = ({ xorOutput }) => {
               ))}
             </div>
           </div>
-        </div>
-        <div className="flex justify-center mt-4">
-          {currentResult && (
-            <div className="text-lg px-4 py-2 rounded">
-              Output: {currentResult.value} ({currentResult.value.toString(2).padStart(4, '0')})
-            </div>
-          )}
         </div>
       </div>
     </div>

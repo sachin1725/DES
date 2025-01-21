@@ -4,7 +4,7 @@ const FunctionDetails = ({ data, isActive, formatBinary }) => {
   if (!data) return null;
 
   return (
-    <div className={`border rounded-lg p-3 transition-all duration-300 ${isActive ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-gray-50'}`}>
+    <div className="border rounded-lg p-4">
       <div className="relative w-full max-w-sm mx-auto space-y-1">
         {/* Header */}
         <div className="text-center font-semibold text-sm">

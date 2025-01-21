@@ -185,9 +185,8 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
 
   return (
     <div>
-      <div className="flex items-center justify-center mb-4">
-        <h1 className="text-4xl font-bold">DES Visualization</h1>
-      </div>
+  
+        <h1 className="text-4xl font-bold text-center">DES Visualization</h1>
 
       <div className="mb-2 grid grid-cols-5 gap-4">
         <div>

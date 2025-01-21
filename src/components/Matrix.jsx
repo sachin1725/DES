@@ -32,7 +32,7 @@ const Matrix = ({ data, cols = 8, highlights, onHover, bg }) => (
   </div>
 );
 
-const PermutationComponent = ({ title, input, output, table, defaultValue = '0'.repeat(64) }) => {
+const PermutationComponent = ({ title, desciption, input, output, table, defaultValue = '0'.repeat(64) }) => {
   const [highlights, setHighlights] = useState({ input: -1, table: -1, output: -1 });
 
   const handleHover = (type, index) => {
@@ -51,10 +51,11 @@ const PermutationComponent = ({ title, input, output, table, defaultValue = '0'.
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <h3 className="text-lg font-semibold mb-4">{title}</h3>
+      <p>{desciption}</p>
       <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
         <div className="flex flex-col items-center">
           <p className="font-medium mb-2">Input:</p>
-          <Matrix 
+          <Matrix
             data={inputBits.split('')}
             highlights={highlights.input}
             bg="bg-blue-50"
@@ -62,7 +63,7 @@ const PermutationComponent = ({ title, input, output, table, defaultValue = '0'.
         </div>
         <div className="flex flex-col items-center gap-4">
           <ArrowRightIcon size={32} />
-          <Matrix 
+          <Matrix
             data={table.flat()}
             highlights={highlights.table}
             onHover={(idx) => handleHover('table', idx)}
@@ -70,7 +71,7 @@ const PermutationComponent = ({ title, input, output, table, defaultValue = '0'.
         </div>
         <div className="flex flex-col items-center">
           <p className="font-medium mb-2">Output:</p>
-          <Matrix 
+          <Matrix
             data={outputBits.split('')}
             highlights={highlights.output}
             onHover={(idx) => handleHover('output', idx)}
@@ -85,6 +86,12 @@ const PermutationComponent = ({ title, input, output, table, defaultValue = '0'.
 const IPMatrix = ({ data }) => (
   <PermutationComponent
     title="Initial Permutation"
+    desciption="
+      It rearranges the 64-bit input by swapping bit positions according to the IP table. 
+      Each bit from the input is mapped to a new position, 
+      optimizing data distribution for the Feistel structure. Hover over the IP table below to observe
+      how the each bit in the input table  is rearranged in the output table.
+      "
     input={data?.message}
     output={data?.permuted}
     table={[
@@ -105,6 +112,11 @@ const FPMatrix = ({ data }) => (
     title="Final Permutation"
     input={data?.swap}
     output={data?.permuted}
+    desciption="
+    It reverses the Initial Permutation (IP) by rearranging the 64-bit block back to its original bit positions. 
+    Like IP, FP does not add security but ensures correct output formatting.Hover over the FP table below to observe
+    how the each bit in the input table  is rearranged in the output table.
+    "
     table={[
       [40, 8, 48, 16, 56, 24, 64, 32],
       [39, 7, 47, 15, 55, 23, 63, 31],
