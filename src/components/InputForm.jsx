@@ -168,14 +168,14 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
       setError('');
 
       // Debug logging
-      console.log({
-        inputMode,
-        originalInput: inputText,
-        blocks: inputBlocks,
-        keyMode,
-        originalKey: keyText,
-        finalKey,
-      });
+      // console.log({
+      //   inputMode,
+      //   originalInput: inputText,
+      //   blocks: inputBlocks,
+      //   keyMode,
+      //   originalKey: keyText,
+      //   finalKey,
+      // });
 
     } catch (error) {
       setError(`Encryption error: ${error.message}`);
@@ -186,7 +186,7 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
   return (
     <div>
   
-        <h1 className="text-4xl font-bold text-center">DES Visualization</h1>
+        <h1 className="text-4xl font-bold text-center mb-4">DES Visualization</h1>
 
       <div className="mb-2 grid grid-cols-5 gap-4">
         <div>

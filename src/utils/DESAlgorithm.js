@@ -114,7 +114,7 @@ export const runDES = (msg, key) => {
             finalPerm
         ));
 
-        console.log(L0.length);
+        // console.log(L0.length);
         
         prevL0 = L0;
         prevR0 = R0;
@@ -125,7 +125,7 @@ export const runDES = (msg, key) => {
     
     result.final.swap = pair;
     result.final.output = enc;
-    console.log(result);
+    // console.log(result);
     return result;
 };
 

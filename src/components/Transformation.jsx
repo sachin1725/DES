@@ -1,16 +1,18 @@
 import { createPermutationComponent } from '../utils/MatrixUtils';
 import SBoxTransformation from './SBoxTransformation';
+
 const ExpansionPermutation = createPermutationComponent({
   defaultOutputRows: 8,
   defaultOutputCols: 6,
   cellSize: 'small',
-  gapSize: 'tiny', // Reduced from small
-  spacing: 'compact'
+  gapSize: 'tiny', 
+  spacing: 'compact',
+ 
 });
 
 const PBoxPermutation = createPermutationComponent({
   cellSize: 'small',
-  spacing: 'compact'
+  spacing: 'compact',
 });
 
 
@@ -19,6 +21,7 @@ const PBoxPermutation = createPermutationComponent({
 export const ExpansionBox = ({ data, currentStage }) => (
   <ExpansionPermutation
     title="Expansion Permutation"
+    dkey='expansion'
     input={data?.rounds[currentStage - 1].right}
     output={data?.rounds[currentStage - 1]?.steps?.expansion}
     table={[
@@ -36,7 +39,8 @@ export const ExpansionBox = ({ data, currentStage }) => (
 
 export const PBox = ({ data, currentStage }) => (
   <PBoxPermutation
-    title="Transposition Permutation"
+    title="P-Box Permutation"
+    dkey='permutation'
     input={data?.rounds[currentStage - 1]?.steps?.sbox_output}
     output={data?.rounds[currentStage - 1]?.steps?.permutation}
     table={[
@@ -50,7 +54,7 @@ export const PBox = ({ data, currentStage }) => (
 
 const Transformation = ({ data, formatBinary, currentStage }) => (
   <div className="w-full flex flex-col">
-    <div className="w-full flex flex-col sm:flex-row">
+    <div className="w-full flex flex-col md:flex-row">
       <ExpansionBox data={data} currentStage={currentStage} />
       <PBox data={data} currentStage={currentStage} />
     </div>

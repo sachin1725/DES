@@ -6,6 +6,8 @@ import { IPMatrix, FPMatrix } from './components/Matrix';
 import Transformation from './components/Transformation';
 import InputForm from './components/InputForm';
 import FeistelStructure from './components/FeistelStructure';
+import DESInfoCard from './DESInfoCard';
+
 
 const hexToBin = (hex) => ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
 const binToHex = (bin) => parseInt(bin, 2).toString(16).toUpperCase();
@@ -133,7 +135,7 @@ const AnimationControls = ({
         className="flex-1 px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center justify-center gap-2 text-sm"
       >
         {!isAnimating || isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-        {!isAnimating ? 'Start Animation' : (isPaused ? 'Resume' : 'Pause')}
+        {!isAnimating ? 'Start' : (isPaused ? 'Resume' : 'Pause')}
       </button>
 
       <button
@@ -182,7 +184,7 @@ const AnimationControls = ({
 const ResultsPanel = ({ desResult, currentStage, formatBinary, isPaused, showDetails }) => {
   if (!desResult) return null;
 
-  if (currentStage === 0 && showDetails) return <IPMatrix data={desResult.initial} formatBinary={formatBinary} isPaused={isPaused} />;
+  if (currentStage === 0 && showDetails) return <IPMatrix className="flex md:flex-row" data={desResult.initial} formatBinary={formatBinary} isPaused={isPaused} />;
   if (currentStage === 17 && showDetails) return <FPMatrix data={desResult.final} formatBinary={formatBinary} isPaused={isPaused} />;
 
   return (

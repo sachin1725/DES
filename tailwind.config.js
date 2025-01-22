@@ -1,4 +1,4 @@
-console.log('Tailwind config loaded');
+//console.log('Tailwind config loaded');
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [

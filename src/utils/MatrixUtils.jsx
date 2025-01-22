@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useState } from 'react';
-
+import DESInfoCard from '../DESInfoCard';
 const Cell = ({
   value,
   onHover,
@@ -77,9 +77,10 @@ export const createPermutationComponent = ({
   cellSize = 'small',
   gapSize = 'small',
   spacing = 'normal', // 'normal' | 'compact' | 'wide'
-  layout = 'horizontal' // 'horizontal' | 'vertical'
+  layout = 'horizontal', // 'horizontal' | 'vertical'
+
 }) => {
-  return ({ title, input, output, table, onHighlight }) => {
+  return ({ title, dkey, input, output, table, onHighlight }) => {
     const [highlights, setHighlights] = useState({ input: -1, table: -1, output: -1 });
     const tableCols = table[0].length;
 
@@ -116,9 +117,12 @@ export const createPermutationComponent = ({
     const outputBits = output || '0'.repeat(defaultLength);
 
     return (
-      <div className="p-4 rounded-lg shadow lg:flex-row flex-col ">
-        <h3 className="text-base font-semibold mb-6">{title}</h3> {/* Added margin bottom */}
-        <div className={`mt-6 ${layoutClasses[layout]} ${spacingClasses[spacing]}`}> {/* Added margin top */}
+      <div className="p-4 rounded-lg shadow lg:flex-row flex-col overflow-x-scroll ">
+        <div className='flex items-center justify-center'> 
+        <DESInfoCard stage={dkey}/>
+        <h3 className="text-base font-semibold ">{title}</h3> {/* Added margin bottom */}
+        </div>
+        <div className={`mt-6 ${layoutClasses[layout]} ${spacingClasses[spacing]} flex-col md:flex-row`}> {/* Added margin top */}
           <div className="">
             <p className="text-sm font-medium mb-1">Input:</p>
             <Matrix

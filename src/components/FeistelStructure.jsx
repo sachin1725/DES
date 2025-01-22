@@ -42,9 +42,9 @@ const FeistelStructure = ({ currentStage, roundNumber, data }) => {
         {/* Connection Structure */}
         <div className="w-full mb-2">
           <ArrowDown className="mx-auto" size={16} />
-          <div className="flex-1 h-14 md:h-10 border rounded bg-white flex flex-col items-center justify-center p-4 text-xs">
+          <div className="flex-1 h-14 md:h-10 border rounded bg-white flex flex-row gap-16 items-center justify-center p-4 text-xs">
             <p className="block">L<sub>{effectiveRound}</sub> = R <sub>{effectiveRound - 1}</sub></p>
-            <p className="block">R{effectiveRound} = L{effectiveRound - 1} ⊕ f(R{effectiveRound - 1}, K{effectiveRound})</p>
+            <p className="block">R<sub>{effectiveRound}</sub> = L<sub>{effectiveRound - 1}</sub> ⊕ f(R<sub>{effectiveRound - 1}</sub>, K<sub>{effectiveRound}</sub>)</p>
           </div>
           <ArrowDown className="mx-auto" size={16} />
         </div>

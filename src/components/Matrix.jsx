@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRightIcon } from 'lucide-react';
-
+import DESInfoCard from '../DESInfoCard';
 const Cell = ({ value, onHover, isHighlighted, bg = 'bg-gray-100' }) => (
   <div
     className={`px-2 py-1 border rounded transition-colors duration-300 cursor-pointer w-8 h-8 flex items-center justify-center
@@ -32,7 +32,7 @@ const Matrix = ({ data, cols = 8, highlights, onHover, bg }) => (
   </div>
 );
 
-const PermutationComponent = ({ title, desciption, input, output, table, defaultValue = '0'.repeat(64) }) => {
+const PermutationComponent = ({ title, dkey, input, output, table, defaultValue = '0'.repeat(64) }) => {
   const [highlights, setHighlights] = useState({ input: -1, table: -1, output: -1 });
 
   const handleHover = (type, index) => {
@@ -50,9 +50,11 @@ const PermutationComponent = ({ title, desciption, input, output, table, default
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">{title}</h3>
-      <p>{desciption}</p>
-      <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
+      <div className='flex justify-center items-center'>
+      <DESInfoCard stage={dkey} />
+      <h3 className="text-lg font-semibold">{title}</h3>
+      </div>
+      <div className="grid grid-cols-1 gap-4 items-center justify-items-center md:grid-cols-3">
         <div className="flex flex-col items-center">
           <p className="font-medium mb-2">Input:</p>
           <Matrix
@@ -86,12 +88,7 @@ const PermutationComponent = ({ title, desciption, input, output, table, default
 const IPMatrix = ({ data }) => (
   <PermutationComponent
     title="Initial Permutation"
-    desciption="
-      It rearranges the 64-bit input by swapping bit positions according to the IP table. 
-      Each bit from the input is mapped to a new position, 
-      optimizing data distribution for the Feistel structure. Hover over the IP table below to observe
-      how the each bit in the input table  is rearranged in the output table.
-      "
+    dkey="initial"
     input={data?.message}
     output={data?.permuted}
     table={[
@@ -110,13 +107,9 @@ const IPMatrix = ({ data }) => (
 const FPMatrix = ({ data }) => (
   <PermutationComponent
     title="Final Permutation"
+    dkey="final"
     input={data?.swap}
     output={data?.permuted}
-    desciption="
-    It reverses the Initial Permutation (IP) by rearranging the 64-bit block back to its original bit positions. 
-    Like IP, FP does not add security but ensures correct output formatting.Hover over the FP table below to observe
-    how the each bit in the input table  is rearranged in the output table.
-    "
     table={[
       [40, 8, 48, 16, 56, 24, 64, 32],
       [39, 7, 47, 15, 55, 23, 63, 31],
