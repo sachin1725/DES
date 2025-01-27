@@ -2,30 +2,36 @@ import React from 'react';
 import { jsPDF } from 'jspdf';
 import { runDES } from '../utils/DESAlgorithm.js';
 
+// Fixed conversion utilities
+const hexToBin = (hex) => {
+  if (!hex) return '';
+  // Convert each hex digit to 4 bits, pad with leading zeros
+  return hex.split('').map(digit => 
+    parseInt(digit, 16).toString(2).padStart(4, '0')
+  ).join('');
+};
 
-const chunkString = (str, len) => str.match(new RegExp('.{1,' + len + '}', 'g'));
-const hexToBin = (hex) => ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
+const binToHex = (bin) => {
+  if (!bin) return '';
+  // Convert each 4 bits to a hex digit
+  return bin.match(/.{1,4}/g)?.map(chunk => 
+    parseInt(chunk, 2).toString(16).toUpperCase()
+  ).join('') || '';
+};
 
-// Utility function to format binary string for readability
+// Format binary string with specified group size
 const formatBinaryString = (binaryStr, groupSize = 8) => {
   if (!binaryStr) return 'N/A';
-  return binaryStr
-    .match(new RegExp(`.{1,${groupSize}}`, 'g'))
-    .join(' ');
+  // Split into groups and join with spaces
+  return binaryStr.match(new RegExp(`.{1,${groupSize}}`, 'g'))?.join(' ') || 'N/A';
 };
 
-
-// Utility function to convert binary to hex
-const binaryToHex = (binaryStr) => {
-  if (!binaryStr) return 'N/A';
-  return binaryStr
-    .match(/.{4}/g)
-    .map(fourBits => {
-      const hexDigit = parseInt(fourBits, 2).toString(16).toUpperCase();
-      return hexDigit.padStart(1, '0');
-    })
-    .join('');
+// Convert hex string to binary string
+const convertHexToBinary = (hexInput) => {
+  if (!hexInput) return '';
+  return hexToBin(hexInput);
 };
+
 export const generateDESReport = (input, encrKey, blocks) => {
   // Create a new PDF document
   const doc = new jsPDF({
@@ -33,10 +39,6 @@ export const generateDESReport = (input, encrKey, blocks) => {
     unit: 'mm',
     format: 'a4'
   });
-
-  // Conversion utilities inline with the function
-  const convertHexToBinary = (hexInput) =>
-    chunkString(hexInput, 2).map(hex => hexToBin(hex)).join("");
 
   // Prepare binary conversions
   const binaryMsg = convertHexToBinary(input);
@@ -132,12 +134,12 @@ export const generateDESReport = (input, encrKey, blocks) => {
         };
 
         [
-          `Round Key (Hex): ${binaryToHex(round.key)}`,
-          `Left Half: ${formatBinaryString(round.left,4)}`,
-          `Right Half: ${formatBinaryString(round.right,4)}`,
-          `Expansion: ${formatBinaryString(round.steps.expansion,6)}`,
-          `XOR Output: ${formatBinaryString(round.steps.xor_output,6)}`,
-          `S-Box Output: ${formatBinaryString(round.steps.sbox_output,4)}`,
+          `Round Key (Hex): ${binToHex(round.key)}`,
+          `Left Half: ${formatBinaryString(round.left, 4)}`,
+          `Right Half: ${formatBinaryString(round.right, 4)}`,
+          `Expansion: ${formatBinaryString(round.steps.expansion, 6)}`,
+          `XOR Output: ${formatBinaryString(round.steps.xor_output, 6)}`,
+          `S-Box Output: ${formatBinaryString(round.steps.sbox_output, 4)}`,
           `Permutation: ${formatBinaryString(round.steps.permutation)}`
         ].forEach(addLine);
 
@@ -158,8 +160,8 @@ export const generateDESReport = (input, encrKey, blocks) => {
     
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text(`Pre-swap: ${formatBinaryString(blockResult.final.swap)}`, 20, 65);
-    doc.text(`Post-swap: ${formatBinaryString(blockResult.final.preOutput)}`, 20, 80);
+    doc.text(`Pre-swap: ${formatBinaryString(blockResult.swap.input, 32)}`, 20, 65);
+    doc.text(`Post-swap: ${formatBinaryString(blockResult.swap.output, 32)}`, 20, 80);
     
     // Final permutation details
     doc.setFont('helvetica', 'bold');
@@ -168,13 +170,14 @@ export const generateDESReport = (input, encrKey, blocks) => {
     
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text(`Input to final permutation: ${formatBinaryString(blockResult.final.preOutput)}`, 20, 115);
-    doc.text(`Final output (Binary): ${formatBinaryString(blockResult.final.output)}`, 20, 130);
-    doc.text(`Final output (Hex): ${binaryToHex(blockResult.final.output)}`, 20, 145);
+    doc.text(`Input to final permutation: ${formatBinaryString(blockResult.final.input, 32)}`, 20, 115);
+    doc.text(`Final output (Binary): ${formatBinaryString(blockResult.final.output, 32)}`, 20, 130);
+    doc.text(`Final output (Hex): ${binToHex(blockResult.final.output)}`, 20, 145);
   });
 
   return doc;
 };
+
 // React component for Report Download
 const GenerateDESReport = ({ input, encrKey, blocks }) => {
   const handleDownloadReport = () => {
