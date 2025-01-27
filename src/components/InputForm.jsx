@@ -147,6 +147,7 @@ const InputForm = ({ setInput,blockInput, setBlockInput, encrKey, setEncrKey, bl
       let finalKey;
       if (keyMode === 'text') {
         const validKey = keyText.length === 8 ? keyText : pkcs5Pad(keyText);
+        
         finalKey = textToHex(validKey);
       } else {
         finalKey = keyText.padEnd(16, '0');
@@ -198,6 +199,7 @@ const InputForm = ({ setInput,blockInput, setBlockInput, encrKey, setEncrKey, bl
               
                 setInputMode(e.target.value);
                 setInputText('');
+                setInput('')
                 setError('');
                 setBlocks([]);
               }}

@@ -10,6 +10,13 @@ const hexToBin = (hex) => {
     parseInt(digit, 16).toString(2).padStart(4, '0')
   ).join('');
 };
+const textToHex = (text) => {
+  return Array.from(text)
+    .map(char => char.charCodeAt(0).toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase();
+};
+
 
 const binToHex = (bin) => {
   if (!bin) return '';
@@ -40,8 +47,10 @@ export const generateDESReport = (input, encrKey, blocks) => {
     format: 'a4'
   });
 
+  console.log(input);
+
   // Prepare binary conversions
-  const binaryMsg = convertHexToBinary(input);
+  const binaryMsg = convertHexToBinary(textToHex(input));
   const binaryKey = convertHexToBinary(encrKey);
 
   // Main Title
