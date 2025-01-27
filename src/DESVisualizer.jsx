@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ArrowDown, Play, Pause, RotateCw, SkipForward, ChevronUp, ChevronDown, LucideSkipBack } from 'lucide-react';
+import { ArrowDown, Play, Pause, SkipForward, ChevronUp, ChevronDown, LucideSkipBack } from 'lucide-react';
 import { runDES } from './utils/DESAlgorithm';
 import FunctionDetails from './components/FunctionDetails';
 import { IPMatrix, FPMatrix } from './components/Matrix';
 import Transformation from './components/Transformation';
 import InputForm from './components/InputForm';
 import FeistelStructure from './components/FeistelStructure';
-import DESInfoCard from './DESInfoCard';
+import GenerateDESReport from './components/GenerateDESReport';
 
 
 const hexToBin = (hex) => ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
@@ -59,11 +59,11 @@ const ArrowDivider = () => (
 
 
 // Stage Display Component
-const StageDisplay = ({ stage, input, effectiveRound, currentStage, cipherText, getStageStyles, desResult }) => (
+const StageDisplay = ({ stage, blockInput, effectiveRound, currentStage, cipherText, getStageStyles, desResult }) => (
   <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm">
     {/* Input Box */}
     <StageBox stageStyle={getStageStyles(-1, stage)}>
-      <h1>{input || 'Input (64-bit)'}</h1>
+      <h1>{blockInput || 'Input (64-bit)'}</h1>
     </StageBox>
 
     <ArrowDivider />
@@ -185,7 +185,25 @@ const ResultsPanel = ({ desResult, currentStage, formatBinary, isPaused, showDet
   if (!desResult) return null;
 
   if (currentStage === 0 && showDetails) return <IPMatrix className="flex md:flex-row" data={desResult.initial} formatBinary={formatBinary} isPaused={isPaused} />;
-  if (currentStage === 17 && showDetails) return <FPMatrix data={desResult.final} formatBinary={formatBinary} isPaused={isPaused} />;
+  if (currentStage === 17 && showDetails) return (
+    <>
+      <div className='text-center'>32 bit swap</div>
+
+      <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-2">
+        <div>Input:</div>
+        <div><span className='none'>Left:</span>{desResult.swap.input.slice(0, 32)}</div>
+        <div><span className=''>Right:</span>{desResult.swap.input.slice(32, 64)}</div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-2">
+        <div>Output:</div>
+        <div>Left:{desResult.swap.output.slice(0, 32)}</div>
+        <div>Right:{desResult.swap.output.slice(32, 64)}</div>
+      </div>
+      <FPMatrix data={desResult.final} formatBinary={formatBinary} isPaused={isPaused} />
+    </>)
+
+    ;
 
   return (
     <div className={`flex flex-col w-full lg:flex-row transition-all duration-300 ${showDetails ? 'opacity-100' : 'hidden'}`}>
@@ -218,20 +236,23 @@ const DESVisualizer = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showDetails, setShowDetails] = useState(true);
-  const [desResult, setDESResult] = useState(null);
   const [input, setInput] = useState("");
+  const [desResult, setDESResult] = useState(null);
+  const [blockInput, setBlockInput] = useState("");
   const [encrKey, setEncrKey] = useState("");
   const [cipherText, setCipherText] = useState("");
+  const [blocks, setBlocks] = useState([]);
+
 
   const TOTAL_STAGES = 18;
   const effectiveRound = Math.min(Math.max(currentStage, 0), 16);
 
-  // effect to run DES when input or key changes
+  // effect to run DES when blockInput or key changes
   useEffect(() => {
-    if (input && encrKey) {
+    if (blockInput && encrKey) {
       try {
-        // Convert hex input to binary
-        const binaryMsg = chunkString(input, 2).map(hex => hexToBin(hex)).join("");
+        // Convert hex blockInput to binary
+        const binaryMsg = chunkString(blockInput, 2).map(hex => hexToBin(hex)).join("");
         const binaryKey = chunkString(encrKey, 2).map(hex => hexToBin(hex)).join("");
 
         // Run DES algorithm
@@ -254,11 +275,11 @@ const DESVisualizer = () => {
         console.error('Error running DES:', error);
       }
     }
-  }, [input, encrKey]);
+  }, [blockInput, encrKey]);
 
   const handleMainButtonClick = () => {
     if (!desResult) {
-      alert("Please input a message and key to start the animation");
+      alert("Please blockInput a message and key to start the animation");
       return;
     }
     if (!isAnimating) {
@@ -307,29 +328,39 @@ const DESVisualizer = () => {
     <div className="max-w-[98vw] mx-auto">
       <div className="p-2">
         <InputForm
-          input={input}
           setInput={setInput}
+          blockInput={blockInput}
+          setBlockInput={setBlockInput}
           encrKey={encrKey}
           setEncrKey={setEncrKey}
+          blocks={blocks}
+          setBlocks={setBlocks}
         />
+        <GenerateDESReport
+          input={input}
+          encrKey={encrKey}
+          blocks={blocks}
+        />
+        <div className=' top-2 sticky z-20'>
+          <AnimationControls
+            isAnimating={isAnimating}
+            isPaused={isPaused}
+            onMainButtonClick={handleMainButtonClick}
+            onPrev={handlePrev}
+            onSkip={handleSkip}
+            showDetails={showDetails}
+            onToggleDetails={() => setShowDetails(!showDetails)}
+            currentStage={currentStage}
+            totalStages={TOTAL_STAGES}
+          />
 
-        <AnimationControls
-          isAnimating={isAnimating}
-          isPaused={isPaused}
-          onMainButtonClick={handleMainButtonClick}
-          onPrev={handlePrev}
-          onSkip={handleSkip}
-          showDetails={showDetails}
-          onToggleDetails={() => setShowDetails(!showDetails)}
-          currentStage={currentStage}
-          totalStages={TOTAL_STAGES}
-        />
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-80 min-w-[280px] max-w-full">
             <StageDisplay
               stage={currentStage}
-              input={input}
+              blockInput={blockInput}
               effectiveRound={effectiveRound}
               currentStage={currentStage}
               cipherText={cipherText}

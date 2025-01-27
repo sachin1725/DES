@@ -79,6 +79,7 @@ export const runDES = (msg, key) => {
             key: key
         },
         rounds: [],
+        swap:{},
         final: {}
     };
     
@@ -114,7 +115,6 @@ export const runDES = (msg, key) => {
             finalPerm
         ));
 
-        // console.log(L0.length);
         
         prevL0 = L0;
         prevR0 = R0;
@@ -122,10 +122,12 @@ export const runDES = (msg, key) => {
 
     let pair = R0 + L0;
     let enc = FINAL_IP.map(index => pair[index - 1]).join("");
-    
+    result.swap.input = L0+R0;
+    result.swap.output = pair;
     result.final.swap = pair;
+    result.final.input = pair;
     result.final.output = enc;
-    // console.log(result);
+    console.log(result);
     return result;
 };
 

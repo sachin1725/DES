@@ -30,13 +30,13 @@ const BlockSelector = ({ blocks, activeBlockIndex, onBlockSelect }) => {
   );
 };
 
-const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
+const InputForm = ({ setInput,blockInput, setBlockInput, encrKey, setEncrKey, blocks,setBlocks }) => {
   const [inputText, setInputText] = useState('');
   const [keyText, setKeyText] = useState('');
   const [error, setError] = useState('');
   const [inputMode, setInputMode] = useState('text'); 
   const [keyMode, setKeyMode] = useState('text');
-  const [blocks, setBlocks] = useState([]);
+  
   const [activeBlockIndex, setActiveBlockIndex] = useState(0);
 
   // PKCS#5/PKCS#7 padding for the last block
@@ -96,10 +96,10 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
       .toUpperCase();
   };
 
-  // Validate input
+  // Validate blockInput
   const validateInput = (text, mode, isKey = false) => {
     if (!text || !text.trim()) {
-      return `Please enter ${isKey ? 'key' : 'input'} ${mode === 'text' ? 'text' : 'in hex format'}`;
+      return `Please enter ${isKey ? 'key' : 'blockInput'} ${mode === 'text' ? 'text' : 'in hex format'}`;
     }
 
     if (mode === 'text') {
@@ -124,12 +124,12 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
 
   const handleBlockSelect = (block, index) => {
     setActiveBlockIndex(index);
-    setInput(block);
+    setBlockInput(block);
   };
 
   const handleEncrypt = () => {
     try {
-      // Validate input
+      // Validate blockInput
       const inputError = validateInput(inputText, inputMode);
       if (inputError) {
         setError(inputError);
@@ -152,7 +152,7 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
         finalKey = keyText.padEnd(16, '0');
       }
 
-      // Process input blocks
+      // Process blockInput blocks
       let inputBlocks;
       if (inputMode === 'text') {
         inputBlocks = getTextBlocks(inputText).map(block => textToHex(block));
@@ -163,7 +163,7 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
       // Set the blocks and select the first one
       setBlocks(inputBlocks);
       setActiveBlockIndex(0);
-      setInput(inputBlocks[0]);
+      setBlockInput(inputBlocks[0]);
       setEncrKey(finalKey);
       setError('');
 
@@ -195,6 +195,7 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
             <select 
               value={inputMode}
               onChange={(e) => {
+              
                 setInputMode(e.target.value);
                 setInputText('');
                 setError('');
@@ -211,6 +212,7 @@ const InputForm = ({ input, setInput, encrKey, setEncrKey }) => {
             value={inputText}
             onChange={(e) => {
               setInputText(e.target.value);
+              setInput(inputText);
               setError('');
             }}
             placeholder={inputMode === 'text' ? "Enter text" : "Enter hex"}
