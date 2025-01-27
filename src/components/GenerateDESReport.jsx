@@ -67,8 +67,8 @@ export const generateDESReport = (input, encrKey, blocks) => {
   doc.setFontSize(11);
   doc.text(`Total Blocks: ${blocks.length}`, 15, 50);
   doc.text(`Input: ${input}`, 15, 60);
+  doc.text(`Input (Binary): ${formatBinaryString(binaryMsg,64)}`, 15, 80);
   doc.text(`Encryption Key: ${encrKey}`, 15, 70);
-  doc.text(`Original Message (Binary): ${formatBinaryString(binaryMsg)}`, 15, 80);
   doc.text(`Key (Binary): ${formatBinaryString(binaryKey)}`, 15, 90);
 
   // Process each block
