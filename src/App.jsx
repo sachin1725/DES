@@ -11,7 +11,7 @@ const App = () => {
       </main>
       <footer className="bg-gray-100 text-center py-4">
         <a
-          href="https://github.com/your-username/your-repo"
+          href="https://github.com/sachin1725/DES"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 hover:underline"
